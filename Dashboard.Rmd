@@ -1,0 +1,116 @@
+---
+title: "Resultados"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+```
+
+
+
+
+# Comparaciones entre aprendizaje
+
+-----------------------------------------------------------------------
+
+
+```{r}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+
+data <- read_excel("O:\\Materias maestria\\Investigación_Tesis_maestria\\GeneracionDeDatasets\\SegundoIntento\\ComparativaMetricas.xlsx")
+
+Aprendizajes <- data %>% 
+  filter(modelo %in% c("SGDClassifier", "Perceptron", "PassiveAggressiveClassifier", "BernoulliNB"))
+
+
+ggplot(Aprendizajes, aes(x = filtrado, y = MCC, fill = aprendizaje)) + 
+  geom_boxplot(outlier.shape = 21, outlier.fill = "red2", outlier.color = "black", outlier.size = 2) + # Personaliza los puntos atípicos
+  theme_bw() + 
+  labs(title = "Distribución de MCC por aprendizaje y filtrado",
+       x = "Filtrado",
+       y = "MCC",
+       fill = "Tipo de aprendizaje") + 
+  scale_fill_manual(values = c("Incremental" = "#B3DDf2", "Tradicional" = "#F5C6AA")) + # Colores personalizados
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5), # Título centrado y con estilo
+    axis.title.x = element_text(size = 14, face = "bold"),            # Tamaño y estilo del título del eje X
+    axis.title.y = element_text(size = 14, face = "bold"),            # Tamaño y estilo del título del eje Y
+    axis.text = element_text(size = 12, color = "black"),             # Tamaño y color de las etiquetas de los ejes
+    legend.title = element_text(size = 14, face = "bold"),            # Estilo del título de la leyenda
+    legend.text = element_text(size = 12),                            # Tamaño del texto de la leyenda
+    panel.grid.major = element_line(color = "gray"),                # Color de las líneas de la cuadrícula
+    panel.grid.minor = element_blank()                                # Eliminar cuadrícula menor
+  )
+
+```
+
+
+
+
+
+# Aprendizaje tradicional con criterio 1
+
+```{r}
+
+library(ggplot2)
+library(tidyr)
+
+# Filtrar solo los primeros 4 modelos
+data <- data.frame(
+  Modelo = c("SGDC", "Perceptron", "PAC", "BNB"),
+  MCC = c(0.40517374, 0.330881785, 0.426313396, 0.355927776),
+  Precision = c(0.639534884, 0.95, 0.564885496, 0.511111111),
+  Recall = c(0.454545455, 0.157024793, 0.611570248, 0.570247934),
+  F1_Score = c(0.531400966, 0.269503546, 0.587301587, 0.5390625)
+)
+
+# Convertir a formato largo para ggplot2
+data_long <- pivot_longer(data, cols = c(MCC, Precision, Recall, F1_Score), 
+                          names_to = "Métrica")
+
+# Crear gráfico de barras con etiquetas en la punta de MCC
+ggplot(data_long, aes(x = Modelo, y = Valor, fill = Métrica)) +
+  geom_bar(stat = "identity", position = "dodge", width = 0.7) +
+  geom_text(aes(label = ifelse(Métrica == "MCC", round(Valor, 3), "")), 
+            position = position_dodge(width = 1), vjust = -0.5, size = 4) + 
+  theme_minimal() +
+  labs(title = "Comparación de Métricas por Modelo",
+       x = "Modelo", y = "Valor de la Métrica", fill = "Métrica") +
+  theme(axis.text.x = element_text(angle = 0, hjust = 1))
+
+```
+
+
+
+
+# Por tipos de aprendizaje 
+
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+
+
+
+# B
+
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+
+```
+
+### Chart C
+
+```{r}
+
+```
